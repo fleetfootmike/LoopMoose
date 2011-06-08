@@ -1,0 +1,40 @@
+Ch 0:
+
+Assumptions:
+	Basic Perl (see Modern Perl, etc)
+	Have a Perl you can customise:
+		Linux/OS X: perlbrew
+		Windows: Strawberry Perl
+	Have Moose installed (Task::Kensho::Moose from choice)
+	(see appendix for detailed installation instructions)
+
+
+Ch 1:
+Dummies guide to OO:
+	What is OO?
+	Functions vs objects
+	Instantiation
+	Methods
+	Attributes
+
+	Formal definition of an object
+	Polymorphism
+
+Ch 2:
+Creating a class in Moose
+	new()
+	attributes - has
+	basic method
+
+Ch 3:   
+Inheritance:
+	extends
+	overriding inherited methods
+
+Ch 4:
+More on attributes
+	is - 'ro' vs 'rw'
+	isa - basic types
+
+Ch 5:
+
