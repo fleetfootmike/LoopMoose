@@ -1,4 +1,4 @@
-=head1 Basic Assumptions
+=head1 0: Basic Assumptions
 
 If you have any grasp of programming languages at all, you'll appreciate that most languages and most programmers count from zero. The chapters of this book are no exception. In this case, chapter 0 (you're reading it, in case you hadn't realised) is all about what I, the author, am assuming about you, the reader, before we start.
 
@@ -39,17 +39,17 @@ The main assumption this book makes is that you know I<some> Perl. At the very l
 
 =over
 
-=item Basic Perl datatypes and control structures and how to use them
+=item * Basic Perl datatypes and control structures and how to use them
 
-=item A grasp of the fundamentals of references in Perl, specifically
+=item * A grasp of the fundamentals of references in Perl, specifically
 
 =over
 
-=item hashrefs
+=item * hashrefs
 
-=item arrayrefs
+=item * arrayrefs
 
-=item coderefs
+=item * coderefs
 
 =back
 
@@ -61,12 +61,16 @@ If the latter, in particular, scares you, I recommend treating yourself to a cop
 
 =head3 Perl (no, really)
 
-You will need a working Perl installation, which you can use to play with the code examples and exercises in this book. More importantly, you will need a working Perl installation (preferably Perl 5.12 or newer), to which you can add modules, 
+You will need a working Perl installation, which you can use to play with the code examples and exercises in this book. More importantly, you will need a working Perl installation (preferably Perl 5.12 or newer), to which you can add modules. 
 
-Fortunately, this is a lot easier than it used to be. If you're on a Unix based OS, including any Linux distro´or MacOS X), I<perlbrew> comes to the rescuse, as long as you have access to a C compiler. Equally, on Windows, you can install Strawberry Perl and get a working Perl environment you control. Appendix 1 covers how to get going on both these platforms in much more detail if you need it.
+If you are a desperate Perl programmer who's apparently restricted to the system Perl installation on a Unix machine, don't worry. Fortunately, getting a local Perl that you have full control over is a lot easier than it used to be. If you're on a Unix based OS, including any Linux distro´or MacOS X), I<perlbrew> comes to the rescuse, as long as you have access to a C compiler. Equally, on Windows, you can install Strawberry Perl and get a working Perl environment you control. Appendix 1 covers how to get going on both these platforms in much more detail if you need it.
 
 =head3 Moose and its supporting modules
 
-Once you have a working Perl that you control, you'll need to install Moose. The best way of doing this, which also picks up a bunch of other handy modules, is to install I<Task::Kenshop::OOP> from the Enligtened Perl Organization's I<Task::Kensho> series. Appendix 2 will cover the details of how to do this for both Unix-like OS's and Windows, if you're unfamiliar with the process.
+Once you have a working Perl that you control, you'll need to install Moose. The best way of doing this, which also picks up a bunch of other handy modules, is to install I<Task::Kensho::OOP> from the Enlightened Perl Organization's I<Task::Kensho> series. Appendix 2 will cover the details of how to do this for both Unix-like OS's and Windows, if you're unfamiliar with the process.
+
+=head2 And now...
+
+That's pretty much it. If you're comfortable with all the prerequisites, and think this is the book for you, let's get on with it!
 
 =cut
