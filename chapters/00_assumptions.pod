@@ -4,11 +4,11 @@ If you have any grasp of programming languages at all, you'll appreciate that mo
 
 So let's get cracking!
 
-=head2 Why are you here?
+=head2 Why you are here
 
 One of the great philosohpical questions of the universe. However, in this case, we'll restrict it to the more relevant question...
 
-=head2 Why are you reading this book?
+=head2 Why you are reading this book
 
 Hopefully, you were drawn in by the title. The important things to note about the title, in this humble author's opinion, are two words that are there, and one that isn't.
 
