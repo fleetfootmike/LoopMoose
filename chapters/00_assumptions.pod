@@ -12,7 +12,7 @@ One of the great philosohpical questions of the universe. However, in this case,
 
 Hopefully, you were drawn in by the title. The important things to note about the title, in this humble author's opinion, are two words that are there, and one that isn't.
 
-First off, the ones that I<are> there
+First off, the ones that I<are> there.
 
 =head3 "Learning"
 
@@ -21,17 +21,17 @@ There is no substitute for getting your hands dirty. It's a well-known tenet of 
 
 =head3 "Programming"
 
-It's something of a personal crusade of mine that I want to hire and train Perl I<programmers>, not Perl I<scripters>. It's just as possible to write good programmes in Perl as it is in any of the other 'Enterprise' languages (Java, Ruby, Python, C#, etc etc), provided you approach it with the same mindset as you would any of those languages.
+It's something of a personal crusade of mine that I want to hire and train Perl I<programmers>, not Perl I<scripters>. It's just as possible to write good programs in Perl as it is in any of the other 'Enterprise' languages (Java, Ruby, Python, C#, etc etc), provided you approach it with the same mindset as you would any of those languages.
 
 And the word that's not there?
 
 =head3 "Perl"
 
-Obviously enough, this is a Perl book - it uses Moose as its means of teaching you how to be an OO programmer. Equally obviously, it's targetted at Perl programmers or wanna-be Perl programmers (again, the word is 'programmer'!). But first and foremost, I want to teach you OO progamming - something that's universally useful whatever language you write in. The core concepts are unchanged, whether you wind up doing in in Perl, Java, Ruby or Objective C.
+Obviously enough, this is a Perl book - it uses the Perl OO framework Moose as its means of teaching you how to be an OO programmer. Equally obviously, it's targetted at Perl programmers or wanna-be Perl programmers (again, that word is 'programmer'!). But first and foremost, I want to teach you OO progamming - something that's universally useful whatever language you write in. The core concepts are unchanged, whether you wind up doing it in in Perl, Java, Ruby or Objective C.
 
 Why does leave the question.. why Moose?
 
-If you have (and it isn't necessary) a familiarity with Perl OO as originally released with Perl 5, you'll be awere that it's entirely possible to spend more time coding the nuts and bolts of your OO implementation than you do writing useful code for your application. Moose is a Perl OO framework that hides the nuts and bolts from you, in a way that really I<does> work, unlike many of its predecessors, and leaves you to get on with what you're paid to do. 
+If you have (and it isn't necessary) a familiarity with Perl OO as originally released with Perl 5, you'll be awere that it's entirely possible to spend more time coding the nuts and bolts of your OO implementation than you do writing useful code for your application. Moose is a Perl OO framework that hides the nuts and bolts from you, in a way that really I<does> work, unlike many of its predecessors, and leaves you to get on with what you're paid to do. Or in this case, what I'm here to do, which is teach you about OO.
 
 =head2 What you need to know before reading this book
 
