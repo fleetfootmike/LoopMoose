@@ -1,5 +1,88 @@
 =head1 1: OO introduced
 
-=head2 
+If you're familiar with the basics of OO, from experience with other languages, you may want to skip portions of this chapter. However, I'd recommend at least skimming it to be sure that you're familiar with the terms I'll be using for certain aspects of OO programming (e.g. 'attributes' vs 'properties').
+
+=head2 Procedural programming
+
+If you've not had any experience with OO programming, it's very likely that what you've been doing, consciously or not, is procedural programming. In procedural languages, such as Perl (prior to Perl 5), PHP (prior to PHP 4), Visual Basic and the like, code flows from statement to statement in a 'do this, then this' kind of way. It's possible to define complex datatypes to represent real-world or virtual things, but these are simply dumb collections of attributes with no knowledge of what behaviour the thing it represents has. Equally, it's possible to define subroutines to re-use common code, but again the subroutines bear no formal relationship to the things the program is dealing with.
+
+For example, we could defineN<All code examples in this chapter will be in something that looks rather like Perl but without all the syntactic rigour.> a structure that represents a person:
+
+    $person = { name => "Mike", legs => 2};
+  
+We can then define a subroutine C<walk>:
+
+    sub go_for_walk {
+        my $thing = shift;
+        
+        say $thing->{name} . " walks on " . $thing->{legs} . " legs."
+    }
+
+That's Perl 5.10's C<say> function, because I so hate having to add "\n" at the end of every C<print>. Lets go:
+
+    go_for_walk($person);
+    > Mike walks on 2 legs.
+    
+Now we can define a data structure to represent man's best friend:
+
+    $dog = { name => "Spot", legs => 4 };
+  
+    go_for_walk($dog);
+    > Spot walks on 4 legs.
+    
+Brilliant. Flushed as we are with our success, let's declare another subroutine that allows a person to give a greeting:
+
+  sub greeting {
+      my $person = shift;
+      
+      say $person->{name} . ' says "Hello."';
+  }
+  
+  greeting($person);
+  > Mike says "Hello."
+  
+Great. Except that our C<greeting> subroutine has no clue about what its argument is, so when we call:
+
+    greeting($dog);
+    
+we get
+
+    > Spot says "Hello."
+    
+And suddenly, we have the punchline to one of my favourite jokes.N<There are these two racehorses in a bar. One says to the other: "Had a strange day. There I was, dead last in the 3.15 at Epsom, and suddenly, something stings me in my rump, whoosh, I started running really fast, finished first by a length."
+
+The second horse says "That's strange. The exact same thing happened to me in the 2.40 at Newmarket."
+
+A greyhound down the other end of the bar pips up, "You know, the same thing happened to me in the 7.56 at Harringay last night."
+
+First horse looks in shock at second horse. "Blimey! A talking dog!"> More importantly, the C<greeting> subroutine has allowed a C<Dog> to perform a behaviour (delivering a greeting) that it shouldn't be able to do.
+
+That's not so good. We can, though, code round it. Let's add a property C<type> to both our data structures, and define another subroutine:
+
+    $person = { name => "Mike", legs => 2,, type => "Person" };
+    $dog = { name => "Spot", legs => 4, type => "Dog"};
+
+    sub be_happy {
+        my $thing = shift;
+        
+        if ($thing->{type} eq 'Dog') {
+            say $thing->{name} . " wags its tail.";
+        }
+        else {
+            say $thing->{name} . " smiles."
+        }
+    }
+    
+Cool. Now we have a C<be_happy> subroutine that can handle things of type C<Person> and type C<Dog>. 
+
+Except... suppose we add another type of thing, C<Cat>. We've suddenly got two problems (not to mention talking cats!). 
+
+    $cat = { name => "Tiddles", legs => 4, type => "Cat" };
+    be_happy($cat);
+    > Tiddles smiles.
+
+Not only do we not handle the concept of cats in C<be_happy>, our sloppy coding (the catch-all C<else>) means that they actually behave like people!
+
+You can see where this is leading, I hope. Every time we add a new type of thing to our world, every subroutine declare has to know about it, and whether it should handle it or complain: we basically have to touch every single piece of our code just to add, say, a horse. Or a car. Not only is this laborious, it's horrendously error-prone.
 
 =cut
