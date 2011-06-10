@@ -27,10 +27,12 @@ Now we can define a data structure to represent man's best friend:
 
     $dog = { name => "Spot", legs => 4 };
   
+Spot! Here boy! Walkies!
+
     go_for_walk($dog);
     > Spot walks on 4 legs.
     
-Brilliant. Flushed as we are with our success, let's declare another subroutine that allows a person to give a greeting:
+Good dog! Flushed as we are with our (and Spot's) success, let's declare another subroutine that allows a person to give a greeting:
 
   sub greeting {
       my $person = shift;
