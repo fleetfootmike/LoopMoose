@@ -1,0 +1,63 @@
+=head1 Ch 0: Assumptions:
+
+	Basic Perl (see Modern Perl, etc) - including a grasp of references!
+	Have a Perl you can customise:
+		Linux/OS X: perlbrew
+		Windows: Strawberry Perl
+	Have Moose installed (Task::Kensho::Moose from choice)
+	(see appendix 1 for detailed installation instructions)
+
+=head1 Ch 1: OO introduced:
+
+	Functions vs objects
+	Instantiation
+	Methods
+	Attributes
+
+	Sidebar :Formal definition of an object. Polymorphism
+
+	Sidebar: Objects in Perl
+	
+=head1 Ch 2 Creating a class in Moose
+
+	new()
+	attributes - has
+	basic method
+
+=head1 Ch 3 Inheritance:
+
+	extends
+	overriding inherited methods
+
+=head1 Ch 4 More on attributes
+
+	is - 'ro' vs 'rw'
+	isa - basic types
+
+=head1 Ch 5 Roles:
+
+=head1 Ch 6 Yet more on attributes:
+
+	Attribute helpers
+	handles 
+
+=head1 Ch 7 Design patterns
+
+	Design patterns explained
+	Singleton
+	Factory
+	
+=head1 Ch 8 Introspection
+
+    The meta class
+
+=head1 Appendix 1  Installing Perl
+
+	...on Unix/Linux/OS X
+	...on Windows
+	
+=head1 Appendix 2 Installing Moose
+	
+=head1 Appendix 3 Places to go for more information
+
+=cut
