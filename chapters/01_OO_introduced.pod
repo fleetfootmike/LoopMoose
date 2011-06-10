@@ -8,7 +8,7 @@ If you've not had any experience with OO programming, it's very likely that what
 
 For example, we could defineN<All code examples in this chapter will be in something that looks rather like Perl but without all the syntactic rigour.> a structure that represents a person:
 
-    $person = { name => "Mike", legs => 2};
+    $person = { name => "Mike", legs => 2 };
   
 We can then define a subroutine C<walk>:
 
@@ -18,7 +18,7 @@ We can then define a subroutine C<walk>:
         say $thing->{name} . " walks on " . $thing->{legs} . " legs."
     }
 
-That's Perl 5.10's C<say> function, because I so hate having to add "\n" at the end of every C<print>. Lets go:
+That's Perl 5.10's C<say> function, because I so hate having to add "\n" at the end of every C<print>. Lets go for a walk:
 
     go_for_walk($person);
     > Mike walks on 2 legs.
@@ -49,15 +49,15 @@ we get
 
     > Spot says "Hello."
     
-And suddenly, we have the punchline to one of my favourite jokes.N<There are these two racehorses in a bar. One says to the other: "Had a strange day. There I was, dead last in the 3.15 at Epsom, and suddenly, something stings me in my rump, whoosh, I started running really fast, finished first by a length."
+And suddenly, we have the punchline to one of my favourite jokes.N< There are these two racehorses in a bar. One says to the other: "Had a strange day. There I was, dead last in the 3.15 at Epsom, and suddenly, something stings me in my rump, whoosh, I started running really fast, finished first by a length."
+ The second horse says "That's strange. The exact same thing happened to me in the 2.40 at Newmarket."
+ A greyhound down the other end of the bar pipes up, "You know, the same thing happened to me in the 7.56 at Harringay last night."
+ First horse looks in shock at second horse. "Blimey! A talking dog!"> 
+More importantly, the C<greeting> subroutine has allowed a C<Dog> to perform a behaviour (delivering a greeting) 
+that it shouldn't be able to do.
 
-The second horse says "That's strange. The exact same thing happened to me in the 2.40 at Newmarket."
-
-A greyhound down the other end of the bar pips up, "You know, the same thing happened to me in the 7.56 at Harringay last night."
-
-First horse looks in shock at second horse. "Blimey! A talking dog!"> More importantly, the C<greeting> subroutine has allowed a C<Dog> to perform a behaviour (delivering a greeting) that it shouldn't be able to do.
-
-That's not so good. We can, though, code round it. Let's add a property C<type> to both our data structures, and define another subroutine:
+That's not so good. We can, though, code round it. Let's add a property C<type> to both our data structures, and 
+define another subroutine:
 
     $person = { name => "Mike", legs => 2,, type => "Person" };
     $dog = { name => "Spot", legs => 4, type => "Dog"};
@@ -75,7 +75,8 @@ That's not so good. We can, though, code round it. Let's add a property C<type> 
     
 Cool. Now we have a C<be_happy> subroutine that can handle things of type C<Person> and type C<Dog>. 
 
-Except... suppose we add another type of thing, C<Cat>. We've suddenly got two problems (not to mention talking cats!). 
+Except... suppose we add another type of thing, C<Cat>. We've suddenly got two problems (not to mention 
+talking cats!). 
 
     $cat = { name => "Tiddles", legs => 4, type => "Cat" };
     be_happy($cat);
@@ -83,6 +84,9 @@ Except... suppose we add another type of thing, C<Cat>. We've suddenly got two p
 
 Not only do we not handle the concept of cats in C<be_happy>, our sloppy coding (the catch-all C<else>) means that they actually behave like people!
 
-You can see where this is leading, I hope. Every time we add a new type of thing to our world, every subroutine declare has to know about it, and whether it should handle it or complain: we basically have to touch every single piece of our code just to add, say, a horse. Or a car. Not only is this laborious, it's horrendously error-prone.
+You can see where this is leading, I hope. Every time we add a new type of thing to our world, every subroutine 
+we declare has to know about it, and whether it should handle it or complain: we basically have to touch every 
+single piece of our code just to add, say, a horse. Or a car. Not only is this laborious, it's horrendously 
+error-prone.
 
 =cut
