@@ -15,7 +15,7 @@ the thing it represents has. Equally, it's possible to define subroutines to re-
 again the subroutines bear no formal relationship to the things the program is dealing with.
 
 For example, we could defineN<All code examples in this chapter will be in something that looks 
-rather like Perl but without all the syntactic rigour.> a structure that represents a person:
+rather like Perl but without paying too much attention to syntactic rigour.> a structure that represents a person:
 
     $person = { name => "Mike", legs => 2 };
   
@@ -134,7 +134,7 @@ Let's have another crack at C<be_happy()>, but this time let's make calling the 
     
     # etc etc
     
-Now all we have to do is add a row to the despatch table for every new object. That's a lot less pain. 
+Now all we have to do is add a row to the dispatch table for every new object. That's a lot less pain. 
 But... wait. In fact, we can do better yet. Because Perl allows us to define anonymous subroutines
 N<If this is starting to make your head spin, I suggest a trip back to the 'Modern Perl' book, 
 specifically chapter 5's section on anonymous functions.>, 
@@ -145,7 +145,7 @@ we could actually store the C<be_happy_cat> code on the cat, like this:
         return $thing->{be_happy_sub}->{$thing};
     }
     
-    my $cat = { 
+    $cat = { 
         name => "Tiddles the nearly object-oriented cat",
         legs => 4,
         be_happy_sub => sub { 
@@ -171,17 +171,17 @@ here's where we start to introduce some OO terminology.
 =head3 Classes, Objects, Instances, Attributes and Methods
 
 Tiddles the nearly object-oriented cat, and all other cats, belong to the B<class> "Cat": their behaviours 
-are defined because they are C<Cat>s. In OO terms, we say they are B<objects>, which are B<instances> of 
+are defined because they are C<Cat>s. In OO terms, we say they are B<objects> which are B<instances> of 
 the class C<Cat>.
 
 With that in mind, let's actually I<define> a class C<Cat>:
 
-    my $Cat = {
+    $Cat = {
         type => "Cat";
         # ...     
     };
 
-    my $tiddles = {
+    $tiddles = {
         name = "Tiddles the even more nearly OO cat",
         _class => $Cat,
     }
@@ -191,9 +191,11 @@ to say Moose) will use the latter term.
 
 As it stands, that doesn't seem to gain us much. But now we can move the definitions of all the cat-like
 behaviours on to the I<class>, rather than the individual I<instance>. In OO parlance, these behaviours are
-called B<methods>. So let's go ahead and expand the definition of C<Cat> a bit:
+called B<methods>. So let's go ahead and expand the definition of C<Cat> a bit. In essence, what we're going
+to do is reinstate our dispatch table, but instead of using it to pick the right method for a given
+object, we're going to use it to pick from between the methods available to an object.
 
-    my $Cat = {
+    $Cat = {
         type => "Cat";
         _methods => {
             be_happy => sub {
@@ -227,7 +229,7 @@ class will pick them up. Fantastic. Let's add another method, C<new()>:
 What's special about C<new>? It's what's known in OO circles as a B<constructor> method - it allows us 
 to create a new I<instance> of a I<class>, like this:
 
-    my $tom = $Cat->{_methods}->{new}->( name => "Thomas O'Malley" );
+    $tom = $Cat->{_methods}->{new}->( name => "Thomas O'Malley" );
     
     $tom->{_class}->{_methods}->{be_happy}->{$tom};
     > Thomas O'Malley purrs.
@@ -256,12 +258,12 @@ can find out what class it is...
     print can($tom, 'bark') ? "yes" : "no";
     > no
     
-Hopefully, you're starting to get the idea. However, this still isn't perfect. Among other things, the 
-syntax is clunky, and the methods on our classes are all anonymous subroutines, which is going to 
-make things like debugging hard. 
+Hopefully, you're starting to get the idea. However, this approach to OO still isn't perfect. Among 
+other things, the syntax is clunky, and the methods on our classes are all anonymous subroutines, 
+which is going to make things like debugging hard. 
     
-=head2 Proper OO
+=head2 Doing it properly.
 
-We've basically done all the above as if Perl had no OO features at all. 
+We've basically done all the above as if our Perl-like language had no OO features at all. 
 
 =cut
