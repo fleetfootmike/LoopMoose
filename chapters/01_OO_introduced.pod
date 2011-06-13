@@ -34,32 +34,35 @@ Spot! Here boy! Walkies!
     
 Good dog! Flushed as we are with our (and Spot's) success, let's declare another subroutine that allows a person to give a greeting:
 
-  sub greeting {
+  sub give_greeting {
       my $person = shift;
       
       say $person->{name} . ' says "Hello."';
   }
   
-  greeting($person);
+  give_greeting($person);
   > Mike says "Hello."
   
-Great. Except that our C<greeting> subroutine has no clue about what its argument is, so when we call:
+Great. Except that our C<give_greeting> subroutine has no clue about what kind of thing its argument 
+]is, so when we call:
 
-    greeting($dog);
+    give_greeting($dog);
     
 we get
 
     > Spot says "Hello."
     
-And suddenly, we have the punchline to one of my favourite jokes.N< There are these two racehorses in a bar. One says to the other: "Had a strange day. There I was, dead last in the 3.15 at Epsom, and suddenly, something stings me in my rump, whoosh, I started running really fast, finished first by a length."
- The second horse says "That's strange. The exact same thing happened to me in the 2.40 at Newmarket."
- A greyhound down the other end of the bar pipes up, "You know, the same thing happened to me in the 7.56 at Harringay last night."
- First horse looks in shock at second horse. "Blimey! A talking dog!"> 
-More importantly, the C<greeting> subroutine has allowed a C<Dog> to perform a behaviour (delivering a greeting) 
-that it shouldn't be able to do.
+And suddenly, we have the punchline to one of my favourite jokes.N< There are these two racehorses in a bar. 
+One says to the other: "Had a strange day. There I was, dead last in the 3.15 at Epsom, and suddenly, something 
+stings me in my rump, whoosh, I started running really fast, finished first by a length."
+The second horse says "That's strange. The exact same thing happened to me in the 2.40 at Newmarket."
+A greyhound down the other end of the bar pipes up, "You know, the same thing happened to me in the 7.56 at Harringay last night."
+First horse looks in shock at second horse. "Blimey! A talking dog!"> 
+More importantly, the C<give_greeting> subroutine has allowed a C<Dog> to perform a behaviour (delivering a 
+greeting) that it shouldn't be able to do.
 
-That's not so good. We can, though, code round it. Let's add a property C<type> to both our data structures, and 
-define another subroutine:
+That's not so good. We can, though, code round it. Let's add a property C<type> to both our data 
+structures, and define another subroutine:
 
     $person = { name => "Mike", legs => 2,, type => "Person" };
     $dog = { name => "Spot", legs => 4, type => "Dog"};
@@ -103,12 +106,14 @@ Let's have another crack at C<be_happy()>, but this time let's make calling the 
     sub be_happy {
         my $thing = shift;
         
-        my $despatch_table = {
+        my $dispatch_table = {
             cat    => \&be_happy_cat,
             dog    => \&be_happy_dog,
             person => \&be_happy_person,
         }
-        return $despatch_table->{$thing->type}->($thing);
+        
+        my $be_happy_sub = $dispatch_table->{ $thing->{type} };
+        $be_happy_sub->($thing);
     }
     
     sub be_happy_cat {
