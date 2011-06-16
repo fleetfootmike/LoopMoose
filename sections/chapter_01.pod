@@ -1,8 +1,9 @@
 =head1 1: OO introduced
 
 If you're familiar with the basics of OO, from experience with other languages, you may want to skip 
-portions of this chapter. However, I'd recommend at least skimming it to be sure that you're familiar 
-with the terms I'll be using for certain aspects of OO programming (e.g. 'attributes' vs 'properties').
+portions of this chapter. However, I'd still recommend reading it to be sure that you're familiar 
+with the terms I'll be using for certain aspects of OO programming (e.g. 'attributes' vs 'properties', 
+as well as with the concepts needed to undertand 'vanilla' Perl OO.
 
 =head2 Procedural programming
 
@@ -260,10 +261,119 @@ can find out what class it is...
     
 Hopefully, you're starting to get the idea. However, this approach to OO still isn't perfect. Among 
 other things, the syntax is clunky, and the methods on our classes are all anonymous subroutines, 
-which is going to make things like debugging hard. 
+which is going to make things like debugging hard. On top of that, our methods are actually defined 
+at run-time, rather than compile time, which makes for some interesting issues. 
     
 =head2 Doing it properly.
 
-We've basically done all the above as if our Perl-like language had no OO features at all. 
+Ideally what we'd like is to be able to say 'this collection of methods define this class', and at the
+same time 'this variable represents an instance of this class', and then let the language handle the 
+nitty-griity details of calling methods for us with out all this complex looking up of things in the
+class dispatch table.
+
+Fortunately for us, Perl has these features. Lets start by defining the Cat class:
+
+    package Cat;
+    
+    sub be_happy {
+        my $self = shift;
+        say $self->{name} . " purrs.";    
+    }
+    
+    sub give_greeting {
+        my $self = shift;
+        say $self->{name} . " winds around your ankles.";
+    }
+    
+Note that the (hopefully familiar) C<package Cat;> declaration defines the name of our class, and 
+that the methods are simply declared as subroutines within the package. Also note that each method 
+expects the object ($self) as its first argument. Perl then allows us to call the methods using 
+a pretty familiar syntax:
+
+    $tom->give_greeting();
+    > Thomas O'Malley winds around your ankles.
+
+The important thing to notice here is that we don't pass $tom as an argument. Because we're calling 
+C<give_greeting> as a I<method> on an object, Perl does it for us - the object is automagically 
+prepended to the arguments for the method without us having to do anything.
+
+You may notice that we haven't yet adressed the twin questions of 'how does C<$tom> know it's an instance
+of class C<Cat>?' and 'how do we create a new instance of class C<Cat>'. Actually, it's pretty simple, and 
+introduces a new (to Perl 5) keyword, C<bless>.
+
+    package Cat;
+    
+    sub new {
+        my $class = shift;
+        return bless {}, $class;
+    }
+
+    # other method definitions go here
+    
+As you can probably infer from the above example, C<bless> takes a reference and a class name, and 
+essentially labels the reference as belonging to the classN<Conventional practice in Perl OO is that 
+objects are C<bless>'ed hashes. However, they don't have to be.There's nothing to stop you (and i
+ndeed, some modules in CPAN make great use of the fact) blessing any kind of reference you like, 
+be it an arrayref, a coderef, a scalarref, a reference to a filehandle...>. The difference between 
+C<new> and allour other methods is that it expects a class name as its first argument, and we invoke 
+it, for example, like this:
+
+    my $tom = Cat->new();
+    
+In OO parlance, this is a B<class method> - Perl allows us to call a method on a class name. (Again, note
+that Perl does the necessary magic to add the class name to the argument list for C<new()>).
+
+=head3 Encapsulation, attributes and accessors.
+
+Another key tenet of OO programming is the concept of B<encapsulation>. Encapsulation basically says
+that the internal implementation of your object should hidden from your users. Their access to the the 
+object should be only via the methods you define on it, not by making assumptions about the data structure
+that represents it. One key advantage of this is that it allows you to re-implement (or B<refactor>) the
+internals of the object without your users having to change the code that calls it. 
+
+Why's this important? Well, you may well have noticed that our implementation of C<Cat> doesn't yet
+cater for storing attributes like C<name> and C<legs> - in fact, we quietly glossed over the question of
+how Thomas O'Malley got his name in our example above. Our C<bless>'ed hash is still a hash, so in
+theory (and in fact in practice) there would be nothing to prevent us going:
+
+    $tom->{name} = "Thomas O'Malley";
+
+Except that that's a cardinal sin in OO programming - we've broken encapsulation, by assuming that 
+C<Cat> will always be a hashref, and that we can always safely trample on its C<name> field.
+
+The conventional way around this is to provide B<accessor methods> for attributes. For example:
+
+    package Cat;
+    
+    # other methods including new()
+    
+    sub name {
+        my $self = shift;
+        my $value = shift;
+        if (defined $value) {
+            $self->{name} = $value;
+        }
+        return $self->{name};        
+    }
+    
+And then we can go:
+    
+    my $tom = Cat->new;
+    $tom->name("Thomas O"Malley);
+    say $tom->name();
+    > Thomas O'Malley
+
+Notice that C<name()> allows us to both get and set the C<name> atribute: in OO terms, it's both a 
+B<getter> and B<setter> method. This is merely a convention: we could have provided separate methods
+for each, called (say) C<get_name()> and C<set_name()>. Either way, we've removed the need for users
+of our class to know how attributes are stored.
+N<Also notice that there's nothing that actually stops us still accessing a C<Cat> object as a hashref - 
+Perl doesn't prevent us breaking encapsulation if we want to. There are those who consider this to
+be a Bad Thing. Whether it is or not isn't a subject for this chapter, and possibly not even for
+this book, other than to note that by the time you've read this book you should be sufficiently
+well-versed in the object-oriented approach to doing things that the I<thought> of doing so in a 
+Perl program you write should be ringing massive alarm bells. Yes, Perl lets you break encapsulation. 
+I<You> should know better.>
+
 
 =cut
