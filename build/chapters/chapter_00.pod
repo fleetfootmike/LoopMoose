@@ -1,0 +1,101 @@
+=head1 0: Basic Assumptions
+
+If you have any grasp of programming languages at all, you'll appreciate that most languages and most programmers count from
+zero. The chapters of this book are no exception. In this case, chapter 0 (you're reading it, in case you hadn't realised) is
+all about what I, the author, am assuming about you, the reader, before we start.
+
+So let's get cracking!
+
+=head2 Why you are here
+
+One of the great philosohpical questions of the universe. However, in this case, we'll restrict it to the more relevant
+question...
+
+=head2 Why you are reading this book
+
+Hopefully, you were drawn in by the title. The important things to note about the title, in this humble author's opinion, are
+two words that are there, and one that isn't.
+
+First off, the ones that I<are> there.
+
+=head3 "Learning"
+
+OK, so, maybe that's obvious. But this book is about learning - not just teaching. If you're here expecting to read it
+cover-to-cover and walk away with a complete grasp of the subject material, you're probably out of luck. There is no
+substitute for getting your hands dirty. It's a well-known tenet of education that, while it's possible to teach kids by
+standing up at the front of a room and letting them absorb facts, I<adults learn by doing>.
+
+=head3 "Programming"
+
+It's something of a personal crusade of mine that I want to hire and train Perl I<programmers>, not Perl I<scripters>. It's
+just as possible to write good programs in Perl as it is in any of the other 'Enterprise' languages (Java, Ruby, Python, C#,
+etc etc), provided you approach it with the same mindset as you would any of those languages.
+
+And the word that's not there?
+
+=head3 "Perl"
+
+Obviously enough, this is a Perl book - it uses the Perl OO framework Moose as its means of teaching you how to be an OO
+programmer. Equally obviously, it's targetted at Perl programmers or wanna-be Perl programmers (again, that word is
+'programmer'!). But first and foremost, I want to teach you OO progamming - something that's universally useful whatever
+language you write in. The core concepts are unchanged, whether you wind up doing it in in Perl, Java, Ruby or Objective C.
+
+Why does leave the question.. why Moose?
+
+If you have (and it isn't necessary) a familiarity with Perl OO as originally released with Perl 5, you'll be awere that it's
+entirely possible to spend more time coding the nuts and bolts of your OO implementation than you do writing useful code for
+your application. Moose is a Perl OO framework that hides the nuts and bolts from you, in a way that really I<does> work,
+unlike many of its predecessors, and leaves you to get on with what you're paid to do. Or in this case, what I'm here to do,
+which is teach you about OO.
+
+=head2 What you need to know before reading this book
+
+The main assumption this book makes is that you know I<some> Perl. At the very least, in fact, the following
+
+=over
+
+=item * Basic Perl datatypes and control structures and how to use them
+
+=item * A grasp of the fundamentals of references in Perl, specifically
+
+=over
+
+=item * hashrefs
+
+=item * arrayrefs
+
+=item * coderefs
+
+=back
+
+=back
+
+If the latter, in particular, scares you, I recommend treating yourself to a copy of chromatic's "Modern Perl" (go on, the
+online version is free!) before you sit down with this book.
+
+=head2 What you need to work with the examples in this book
+
+=head3 Perl (no, really)
+
+You will need a working Perl installation, which you can use to play with the code examples and exercises in this book. More
+importantly, you will need a working Perl installation (preferably Perl 5.12 or newer), to which you can add modules.
+
+If you are a desperate Perl programmer who's apparently restricted to the system Perl installation on a Unix machine, don't
+worry. Fortunately, getting a local Perl that you have full control over is a lot easier than it used to be. If you're on a
+Unix based OS, including any Linux distro´or MacOS X), I<perlbrew> comes to the rescuse, as long as you have access to a C
+compiler. Equally, on Windows, you can install Strawberry Perl and get a working Perl environment you control. Appendix 1
+covers how to get going on both these platforms in much more detail if you need it.
+
+=head3 Moose and its supporting modules
+
+Once you have a working Perl that you control, you'll need to install Moose. The best way of doing this, which also picks up a
+bunch of other handy modules, is to install I<Task::Kensho::OOP> from the Enlightened Perl Organization's I<Task::Kensho>
+series. Appendix 2 will cover the details of how to do this for both Unix-like OS's and Windows, if you're unfamiliar with the
+process.
+
+=head2 And now...
+
+That's pretty much it. If you're comfortable with all the prerequisites, and think this is the book for you, let's get on with
+it!
+
+=cut
