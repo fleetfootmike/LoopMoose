@@ -1,0 +1,379 @@
+=head1 1: OO introduced
+
+If you're familiar with the basics of OO, from experience with other languages, you may want to skip 
+portions of this chapter. However, I'd still recommend reading it to be sure that you're familiar 
+with the terms I'll be using for certain aspects of OO programming (e.g. 'attributes' vs 'properties', 
+as well as with the concepts needed to undertand 'vanilla' Perl OO.
+
+=head2 Procedural programming
+
+If you've not had any experience with OO programming, it's very likely that what you've been doing, 
+consciously or not, is procedural programming. In procedural languages, such as Perl (prior to Perl 
+5), PHP (prior to PHP 4), Visual Basic and the like, code flows from statement to statement in a 'do 
+this, then this' kind of way. It's possible to define complex datatypes to represent real-world or 
+virtual things, but these are simply dumb collections of attributes with no knowledge of what behaviour 
+the thing it represents has. Equally, it's possible to define subroutines to re-use common code, but 
+again the subroutines bear no formal relationship to the things the program is dealing with.
+
+For example, we could defineN<All code examples in this chapter will be in something that looks 
+rather like Perl but without paying too much attention to syntactic rigour.> a structure that represents a person:
+
+    $person = { name => "Mike", legs => 2 };
+  
+We can then define a subroutine C<go_for_walk>:
+
+    sub go_for_walk {
+        my $thing = shift;
+        
+        say $thing->{name} . " walks on " . $thing->{legs} . " legs."
+    }
+
+That's Perl 5.10's C<say> function, because I so hate having to add "\n" at the end of every C<print>. 
+Let's go for a walk:
+
+    go_for_walk($person);
+    > Mike walks on 2 legs.
+    
+Now we can define a data structure to represent man's best friend:
+
+    $dog = { name => "Spot", legs => 4 };
+  
+Spot! Here boy! Walkies!
+
+    go_for_walk($dog);
+    > Spot walks on 4 legs.
+    
+Good dog! Flushed as we are with our (and Spot's) success, let's declare another subroutine that 
+allows a person to give a greeting:
+
+  sub give_greeting {
+      my $person = shift;
+      
+      say $person->{name} . ' says "Hello."';
+  }
+  
+  give_greeting($person);
+  > Mike says "Hello."
+  
+Great. Except that our C<give_greeting> subroutine has no clue about what kind of thing its argument 
+is, so when we call:
+
+    give_greeting($dog);
+    
+we get
+
+    > Spot says "Hello."
+    
+And suddenly, we have the punchline to one of my favourite jokes.N< There are these two racehorses in a bar. 
+One says to the other: "Had a strange day. There I was, dead last in the 3.15 at Epsom, and suddenly, something 
+stings me in my rump, whoosh, I started running really fast, finished first by a length."
+The second horse says "That's strange. The exact same thing happened to me in the 2.40 at Newmarket."
+A greyhound down the other end of the bar pipes up, "You know, the same thing happened to me in the 7.56 at Harringay last night."
+First horse looks in shock at second horse. "Blimey! A talking dog!"> 
+More importantly, the C<give_greeting> subroutine has allowed a C<Dog> to perform a behaviour (delivering a 
+greeting) that it shouldn't be able to do.
+
+That's not so good. We can, though, code round it. Let's add a property C<type> to both our data 
+structures, and define another subroutine:
+
+    $person = { name => "Mike", legs => 2,, type => "Person" };
+    $dog = { name => "Spot", legs => 4, type => "Dog"};
+
+    sub be_happy {
+        my $thing = shift;
+        
+        if ($thing->{type} eq 'Dog') {
+            say $thing->{name} . " wags its tail.";
+        }
+        else {
+            say $thing->{name} . " smiles."
+        }
+    }
+    
+Cool. Now we have a C<be_happy> subroutine that can handle things of type C<Person> and type C<Dog>. 
+
+Except... suppose we add another type of thing, C<Cat>. We've suddenly got two problems (not to mention 
+talking cats!). 
+
+    $cat = { name => "Tiddles", legs => 4, type => "Cat" };
+    be_happy($cat);
+    > Tiddles smiles.
+
+Not only do we not handle the concept of cats in C<be_happy>, our sloppy coding (the catch-all C<else> construct) means that they actually behave like people!
+
+So, how do we fix this?
+
+Obviously, we could just plough on writing ever more complex conditionals in each of our subroutines, but 
+that comes with a greater and greater attendant risk of, to be blunt, screwing it up. Every time we add a 
+new datatype, we have to fix every new action subroutine that might be called with it, and conversely, 
+every time we add a new action subroutine, we have to make sure we handle every type of thing that might 
+be passed to it.
+
+Not pretty. But not to worry...
+
+=head2 Moving towards OO
+
+Let's have another crack at C<be_happy()>, but this time let's make calling the per-thing subroutines a little less error-prone.
+
+    sub be_happy {
+        my $thing = shift;
+        
+        my $dispatch_table = {
+            Cat    => \&be_happy_cat,
+            Dog    => \&be_happy_dog,
+            Person => \&be_happy_person,
+        }
+        
+        my $be_happy_sub = $dispatch_table->{ $thing->{type} };
+        $be_happy_sub->($thing);
+    }
+    
+    sub be_happy_cat {
+        my $cat = shift;
+        say $cat->{name} . " purrs."
+    }
+    
+    # etc etc
+    
+Now all we have to do is add a row to the dispatch table for every new object. That's a lot less pain. 
+But... wait. In fact, we can do better yet. Because Perl allows us to define anonymous subroutines
+N<If this is starting to make your head spin, I suggest a trip back to the 'Modern Perl' book, 
+specifically chapter 5's section on anonymous functions.>, 
+we could actually store the C<be_happy_cat> code on the cat, like this:
+
+    sub be_happy {
+        my $thing = shift;
+        return $thing->{be_happy_sub}->{$thing};
+    }
+    
+    $cat = { 
+        name => "Tiddles the nearly object-oriented cat",
+        legs => 4,
+        be_happy_sub => sub { 
+            my $self = shift;
+            say $self->{name} . " purrs.";
+        }
+    }
+    
+    # etc etc
+    
+Now C<be_happy()> doesn't have to care what type $thing is at all. Better yet, in fact, C<be_happy> doesn't
+really need to exist, because we can go:
+    
+    $thing->{be_happy_sub}->{$thing};
+    
+and get the desired result, whatever $thing is, provided it has a C<be_happy_sub>. What we've actually 
+done here, in fact, is to move the knowledge of how a cat performs C<be_happy> onto the cat itself.
+
+Well, almost. If we create another cat, we do actually have to duplicate all that common-to-every-cat 
+code on the new cat, which gets to be a faff after a while. But we can work round that, as well. And 
+here's where we start to introduce some OO terminology.
+
+=head3 Classes, Objects, Instances, Attributes and Methods
+
+Tiddles the nearly object-oriented cat, and all other cats, belong to the B<class> "Cat": their behaviours 
+are defined because they are C<Cat>s. In OO terms, we say they are B<objects> which are B<instances> of 
+the class C<Cat>.
+
+With that in mind, let's actually I<define> a class C<Cat>:
+
+    $Cat = {
+        type => "Cat";
+        # ...     
+    };
+
+    $tiddles = {
+        name = "Tiddles the even more nearly OO cat",
+        _class => $Cat,
+    }
+    
+In OO parlance, the C<name> field on C<$tiddles> is called a property or an B<attribute>. We (which is 
+to say Moose) will use the latter term.
+
+As it stands, that doesn't seem to gain us much. But now we can move the definitions of all the cat-like
+behaviours on to the I<class>, rather than the individual I<instance>. In OO parlance, these behaviours are
+called B<methods>. So let's go ahead and expand the definition of C<Cat> a bit. In essence, what we're going
+to do is reinstate our dispatch table, but instead of using it to pick the right method for a given
+object, we're going to use it to pick from between the methods available to an object.
+
+    $Cat = {
+        type => "Cat";
+        _methods => {
+            be_happy => sub {
+                my $self = shift;
+                say $self->{name} . " purrs."
+            },
+        }     
+    };
+
+This may seem a bit convoluted, but now we can say:
+
+    $tiddles->{_class}->{_methods}->{be_happy}->{$tiddles};
+    > Tiddles the even more nearly OO cat purrs.
+
+We can now add or modify methods on C<Cat> as we choose, and all objects that are instances of the 
+class will pick them up. Fantastic. Let's add another method, C<new()>:
+
+    $Cat = {
+        type => "Cat";
+        _methods => {
+            be_happy => sub {
+                my $self = shift;
+                say $self->{name} . " purrs."
+            },
+            new => sub {
+                return { _class => $Cat, @_ };
+            },
+        }     
+    };
+
+What's special about C<new>? It's what's known in OO circles as a B<constructor> method - it allows us 
+to create a new I<instance> of a I<class>, like this:
+
+    $tom = $Cat->{_methods}->{new}->( name => "Thomas O'Malley" );
+    
+    $tom->{_class}->{_methods}->{be_happy}->{$tom};
+    > Thomas O'Malley purrs.
+    
+=head3 Introspection
+
+On top of that, we can now ask an object about itself. This is called B<introspection>. For example, we 
+can find out what class it is...
+
+    sub isa {
+        my $object = shift;
+        my $class = shift;
+        return ($object->{_class}->{_type} eq $class);
+    }
+    print isa($tom, 'Cat') ? "yes" : "no";
+    > yes
+
+... or whether it's capable of a certain behaviour...
+
+    sub can {
+        my $object = shift;
+        my $method = shift;
+        
+        return exists $object->{_class}->{_methods}->{$method};
+    }
+    print can($tom, 'bark') ? "yes" : "no";
+    > no
+    
+Hopefully, you're starting to get the idea. However, this approach to OO still isn't perfect. Among 
+other things, the syntax is clunky, and the methods on our classes are all anonymous subroutines, 
+which is going to make things like debugging hard. On top of that, our methods are actually defined 
+at run-time, rather than compile time, which makes for some interesting issues. 
+    
+=head2 Doing it properly.
+
+Ideally what we'd like is to be able to say 'this collection of methods define this class', and at the
+same time 'this variable represents an instance of this class', and then let the language handle the 
+nitty-griity details of calling methods for us with out all this complex looking up of things in the
+class dispatch table.
+
+Fortunately for us, Perl has these features. Lets start by defining the Cat class:
+
+    package Cat;
+    
+    sub be_happy {
+        my $self = shift;
+        say $self->{name} . " purrs.";    
+    }
+    
+    sub give_greeting {
+        my $self = shift;
+        say $self->{name} . " winds around your ankles.";
+    }
+    
+Note that the (hopefully familiar) C<package Cat;> declaration defines the name of our class, and 
+that the methods are simply declared as subroutines within the package. Also note that each method 
+expects the object ($self) as its first argument. Perl then allows us to call the methods using 
+a pretty familiar syntax:
+
+    $tom->give_greeting();
+    > Thomas O'Malley winds around your ankles.
+
+The important thing to notice here is that we don't pass $tom as an argument. Because we're calling 
+C<give_greeting> as a I<method> on an object, Perl does it for us - the object is automagically 
+prepended to the arguments for the method without us having to do anything.
+
+You may notice that we haven't yet adressed the twin questions of 'how does C<$tom> know it's an instance
+of class C<Cat>?' and 'how do we create a new instance of class C<Cat>'. Actually, it's pretty simple, and 
+introduces a new (to Perl 5) keyword, C<bless>.
+
+    package Cat;
+    
+    sub new {
+        my $class = shift;
+        return bless {}, $class;
+    }
+
+    # other method definitions go here
+    
+As you can probably infer from the above example, C<bless> takes a reference and a class name, and 
+essentially labels the reference as belonging to the classN<Conventional practice in Perl OO is that 
+objects are C<bless>'ed hashes. However, they don't have to be.There's nothing to stop you (and i
+ndeed, some modules in CPAN make great use of the fact) blessing any kind of reference you like, 
+be it an arrayref, a coderef, a scalarref, a reference to a filehandle...>. The difference between 
+C<new> and allour other methods is that it expects a class name as its first argument, and we invoke 
+it, for example, like this:
+
+    my $tom = Cat->new();
+    
+In OO parlance, this is a B<class method> - Perl allows us to call a method on a class name. (Again, note
+that Perl does the necessary magic to add the class name to the argument list for C<new()>).
+
+=head3 Encapsulation, attributes and accessors.
+
+Another key tenet of OO programming is the concept of B<encapsulation>. Encapsulation basically says
+that the internal implementation of your object should hidden from your users. Their access to the the 
+object should be only via the methods you define on it, not by making assumptions about the data structure
+that represents it. One key advantage of this is that it allows you to re-implement (or B<refactor>) the
+internals of the object without your users having to change the code that calls it. 
+
+Why's this important? Well, you may well have noticed that our implementation of C<Cat> doesn't yet
+cater for storing attributes like C<name> and C<legs> - in fact, we quietly glossed over the question of
+how Thomas O'Malley got his name in our example above. Our C<bless>'ed hash is still a hash, so in
+theory (and in fact in practice) there would be nothing to prevent us going:
+
+    $tom->{name} = "Thomas O'Malley";
+
+Except that that's a cardinal sin in OO programming - we've broken encapsulation, by assuming that 
+C<Cat> will always be a hashref, and that we can always safely trample on its C<name> field.
+
+The conventional way around this is to provide B<accessor methods> for attributes. For example:
+
+    package Cat;
+    
+    # other methods including new()
+    
+    sub name {
+        my $self = shift;
+        my $value = shift;
+        if (defined $value) {
+            $self->{name} = $value;
+        }
+        return $self->{name};        
+    }
+    
+And then we can go:
+    
+    my $tom = Cat->new;
+    $tom->name("Thomas O"Malley);
+    say $tom->name();
+    > Thomas O'Malley
+
+Notice that C<name()> allows us to both get and set the C<name> atribute: in OO terms, it's both a 
+B<getter> and B<setter> method. This is merely a convention: we could have provided separate methods
+for each, called (say) C<get_name()> and C<set_name()>. Either way, we've removed the need for users
+of our class to know how attributes are stored.
+N<Also notice that there's nothing that actually stops us still accessing a C<Cat> object as a hashref - 
+Perl doesn't prevent us breaking encapsulation if we want to. There are those who consider this to
+be a Bad Thing. Whether it is or not isn't a subject for this chapter, and possibly not even for
+this book, other than to note that by the time you've read this book you should be sufficiently
+well-versed in the object-oriented approach to doing things that the I<thought> of doing so in a 
+Perl program you write should be ringing massive alarm bells. Yes, Perl lets you break encapsulation. 
+I<You> should know better.>
+
+
+=cut
