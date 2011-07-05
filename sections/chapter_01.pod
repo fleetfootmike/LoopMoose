@@ -128,10 +128,10 @@ Let's have another crack at C<be_happy()>, but this time let's make calling the 
     # etc etc
     
 Now all we have to do is add a row to the dispatch table for every new object. That's a lot less pain. 
-But... wait. In fact, we can do better yet. Because Perl allows us to define anonymous subroutines
-N<If this is starting to make your head spin, I suggest a trip back to the 'Modern Perl' book, 
-specifically chapter 5's section on anonymous functions.>, 
-we could actually store the C<be_happy_cat> code on the cat, like this:
+But... wait. In fact, we can do better yet. Because our Perl-like language allows us to define anonymous 
+subroutinesN<If this is starting to make your head spin, I suggest a trip back to the 'Modern Perl' book, 
+specifically chapter 5's section on anonymous functions.>, we could actually store the C<be_happy_cat> 
+code on the cat, like this:
 
     sub be_happy ( $thing ) {
         return $thing->{be_happy_sub}->{$thing};
@@ -274,8 +274,8 @@ Let's imagine a Perl-ish syntax in which this was possible
         }
     }
     
-Note that the (hopefully familiar) C<package Cat;> declaration defines the name of our class, and 
-that the methods are simply declared as a subroutine (but using a C<method> keyword) within the package. 
+Note that the C<class Cat;> declaration defines the name of our class, and 
+that the methods are simply declared as a subroutine (but using a C<method> keyword) within the class. 
 Also note that each method gets the variable C<$self>, which references the object it was called on.
 This then allows us to call the methods using a pretty familiar syntax:
 
@@ -318,13 +318,13 @@ C<Cat> will always be a hashref, and that we can always safely trample on its C<
 
 The conventional way around this is to provide B<accessor methods> for attributes. For example:
 
-    class Cat;
-        
-    method name ($name, $value? ) {
-        if (defined $value) {
-            $self->{name} = $value;
-        }
-        return $self->{name};        
+    class Cat {
+        method name ($name, $value? ) {
+            if (defined $value) {
+                $self->{name} = $value;
+            }
+            return $self->{name};    
+        }    
     }
     
 And then we can go:
@@ -347,6 +347,19 @@ program you write should be ringing massive alarm bells. Yes, we let you shoot y
 the foot by breaking encapsulation, just as real life lets you point a loaded, large-calibre handgun 
 at one of your lower extremities and pull the trigger. In both cases, you I<should> know better.>
 
+However, that's a bit ugly. So let's define another keyword in our little language to allow us to
+declare that an object C<has> an attribute, and please could the language declare an accessor
+method for it without us having to bother? Something like this, maybe?
+
+    class Cat {
+        has 'name';
+        has 'legs';
+        
+        method be_happy {
+            say $self->name . " purrs.";
+        }
+    }
+
 =head2 Polynorphism
 
 "What," I hear you ask, "on earth is polymorphism, and why should I care?" Actually, we've already 
@@ -354,14 +367,14 @@ been using the concept without realising it. I<Polymorphism> basically says that
 a given method on an object without knowing what the object is, merely that it implements the 
 method, and we'll get an appropriate behaviour for the type of object. For example:
 
-    class Person;
-
-    method take_for_walk ( $thing ) {
-        say $self->name . " takes " . $thing->name . " for a walk.";
-        $thing->go_for_walk();
-        $thing->be_happy();
+    class Person {
+        method take_for_walk ( $thing ) {
+            say $self->name . " takes " . $thing->name . " for a walk.";
+            $thing->go_for_walk();
+            $thing->be_happy();
+        }
     }
-
+    
 Now, as long as C<$thing> can do the C<name()>, C<go_to_walk()> and C<be_happy()> methods, 
 C<take_for_walk()> will work, I<without> knowing or caring anything about the object it's been 
 passed. Like this:
@@ -374,6 +387,125 @@ passed. Like this:
 In the best traditions of this kind of book, the output is left as an exercise for the reader.N<I always 
 wanted to say that in a book.>
 
+=head2 Inheritance
 
+You may have noticed, perhaps, that despite our best efforts there's still quite a lot of duplicated 
+code in our little menagerie of objects. They all have legs, and a name, and they can all walk, for
+example: in fact, they're all animals. Wouldn't it be neat if we could say something like this
 
+    class Animal {
+        has 'name';
+        has 'legs';
+        
+        method go_for_walk () {
+            say $self->name . " walks on " . $self->legs . " legs."
+        }
+        
+        method be_happy () {
+            say $self->name . " is happy.";
+        }
+    }
+    
+and then have all our C<AAnimal>'s pick up from that class. Well, in fact, we can. In OO terms, this
+is known as C<inheritance>, our C<Animal> class is a B<parent> class or B<superclass>, and our C<Cat>
+etc. classes that inherit behaviours from it (we can also say they B<extend> the behaviour of the
+parent class) are its B<subclasses> or B<children>. Let's add the C<extenbds> keyword to our little
+language - it's easy:
+
+    class Cat extends Animal {
+    }
+    
+If that's all we did, then we'd have a class that behaved like C<Animal> in I<all> respects except 
+that if we asked it what class it's an instance of, it's a C<Cat>.  
+
+Which is all very well, except that that C<be_happy()> method on the parent class is a bit generic 
+for cats. So lets define a C<be_happy()> method on the C<Cat> class itself:
+
+    class Cat extends Animal {
+        method be_happy () {
+            say $self->name . " purrs.";
+        }
+        
+        method miaow () {
+            say $self->name . " miaows.";
+        }
+    }
+
+The C<be_happy()> method on C<Cat> is said to B<override> the one on the parent class. 
+
+There's nothing to stop us having classes several deep, with long B<inheritance trees>. 
+For example:
+
+    class Person extends Animal {
+        # ...
+    }
+    
+    class Student extends Person {
+        # ....
+    }
+    
+=head2 UNIVERSAL
+    
+Remember a few paragraphs up, we mentioned asking an object what class it is. That sounds like
+a method of some sort, doesn't it. In fact, it sounds like the C<isa()> function we defined
+way back when we were attempting to figure out why OO was a neat thing. But the question is, 
+which class should we define it on? 
+
+Actually, it turns out the best way to do it is to have a class that all classes inherit
+from (magically, as part of our little OO language), right at the root of their inheritance 
+tree. On this universal class (which for want of a better name, we'll call C<UNIVERSAL>) 
+we can imagine a couple of methods being defined for us.
+
+    class UNIVERSAL {
+        method isa ($class) {
+            # some magic that checks if $self is a member of $class
+        }
+        
+        method can ($method) {
+            # some magic that checks if $self can perform $method
+        }
+    }
+
+And then we can say:
+
+    my $cat = Cat->new( ... );
+    say ($cat->isa('Cat') ? "yes" : "no";
+    say ($cat->can('miaow') ? "yes" : "no";
+    
+    > yes
+    > yes
+    
+Now, here's an interesting question. What happens if we do this?
+
+    say ($cat->can('go_for_walk') ? "yes" : "no";
+    say ($cat->isa('Animal') ? "yes" : "no";
+
+Obviously, a C<Cat> can C<go_for_walk()>. But what about the second one? It's a C<Cat>, right?
+Well yes. But it's also an C<Animal>, because if it wasn't, it couldn't <C<go_for_walk()>. It
+makes sense for C<isa($class)> to return true for any C<$class> in its inheritance tree
+right the way back to the magic C<UNIVERSAL> class. 
+
+Which means of course, that a C<Cat> C<can('can')>. 
+
+=head2 Wrapping it all up.
+
+So, there you have it. We've created a few little language extensions to somerthing that started 
+out looking a lot like Perl, that allow us to define classes and objects and generally do OO 
+programming. 
+
+So, how would we go about implementing this in Perl?
+
+As you can see from our initial clumsy attempts to make Tiddles (the nearly object-oriented
+cat), it gets pretty complex.prety quickly, and we didn't even I<try> to implement any form
+of inheritance. Fortunately, as of Perl 5, Perl does some of this for you. However, it 
+doesn't (by any stretch of the imagination) do it all, and vanilla Perl OO does leave you 
+spending more time handling some of the nits and bolts of things like accessor inheritance
+thank you do geting on with what you're paid to do, namely write good OO code.
+
+Over the course of the intervening decade or more since the advent of Perl 5, an awful 
+lot of helper classes (of varying degrees of sophistication and/or insanity) have sprung 
+up to attempt to minimise the pain of the whole process of doing OO in Perl. 
+
+And in the next chapter, we'll start learning about one of them. If you haven't figured
+out which one, go read the title of the book again.
 =cut
