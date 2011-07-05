@@ -496,16 +496,16 @@ programming.
 So, how would we go about implementing this in Perl?
 
 As you can see from our initial clumsy attempts to make Tiddles (the nearly object-oriented
-cat), it gets pretty complex.prety quickly, and we didn't even I<try> to implement any form
+cat), it gets pretty complex pretty quickly, and we didn't even I<try> to implement any form
 of inheritance. Fortunately, as of Perl 5, Perl does some of this for you. However, it 
 doesn't (by any stretch of the imagination) do it all, and vanilla Perl OO does leave you 
-spending more time handling some of the nits and bolts of things like accessor inheritance
-thank you do geting on with what you're paid to do, namely write good OO code.
+spending more time handling some of the nuts and bolts of things like attribute accessor 
+inheritance than you do geting on with what you're paid to do, namely write good OO code.
 
 Over the course of the intervening decade or more since the advent of Perl 5, an awful 
 lot of helper classes (of varying degrees of sophistication and/or insanity) have sprung 
-up to attempt to minimise the pain of the whole process of doing OO in Perl. 
+up to attempt to minimise the pain of the whole process of doing OO in Perl. In the next 
+chapter, we'll start learning about one of them. (If you haven't figured out which one, 
+go read the title of the book again.)
 
-And in the next chapter, we'll start learning about one of them. If you haven't figured
-out which one, go read the title of the book again.
 =cut
